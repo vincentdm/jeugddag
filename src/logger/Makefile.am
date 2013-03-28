@@ -1,0 +1,3 @@
+noinst_LTLIBRARIES=liblogger.la
+
+liblogger_la_SOURCES=logger.cpp
