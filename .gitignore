@@ -11,3 +11,15 @@
 *.lai
 *.la
 *.a
+
+.cproject
+
+*Makefile
+*Makefile.in
+*configure.in
+*configure
+config.h.*
+config.guess
+config.status
+config.log
+config.sub
