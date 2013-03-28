@@ -21,6 +21,7 @@ public:
 	virtual ~InschrijvingsLijst();
 
 	void ReadFromCSV(std::string filename);
+	void WriteToCSV(std::string filename);
 
 	static InschrijvingsLijst * Merge(const std::vector<InschrijvingsLijst*>&);
 	void Link(const WorkshopCollection& workshops);

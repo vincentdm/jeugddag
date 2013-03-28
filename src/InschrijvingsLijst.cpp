@@ -59,6 +59,34 @@ void InschrijvingsLijst::ReadFromCSV(std::string filename) {
 	}
 }
 
+void InschrijvingsLijst::WriteToCSV(std::string filename) {
+	std::vector<Inschrijving *>::iterator iIt;
+	CSVFile::DATASET set;
+
+	for(iIt=this->inschrijvingen.begin();iIt!=this->inschrijvingen.end();iIt++) {
+		Inschrijving * i = *iIt;
+		Kind * k = i->kind;
+		CSVFile::ROW row;
+		row.push_back(k->naam);
+		row.push_back(k->voornaam);
+		row.push_back(k->geboortedatum);
+		row.push_back(k->telefoon);
+		row.push_back(k->gsm);
+
+		std::vector<WorkshopSessie *>::iterator wsIt;
+		for(wsIt=k->toegekendeWorkshops.begin();wsIt!=k->toegekendeWorkshops.end();wsIt++) {
+			Workshop * w = (*wsIt)->workshop;
+			row.push_back(w->naam);
+		}
+
+		set.push_back(row);
+	}
+
+	CSVFile f;
+	f.Write(filename,set);
+}
+
+
 InschrijvingsLijst* InschrijvingsLijst::Merge(
 		const std::vector<InschrijvingsLijst*>& lijsten) {
 
