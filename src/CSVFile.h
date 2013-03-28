@@ -21,6 +21,7 @@ public:
 
 	void Open(std::string filename);
 	void Close();
+	void Write(std::string filename,DATASET dataToWrite);
 	bool hasHeaders() const;
 	void setHasHeaders(bool hasHeaders);
 	char getSeparator() const;

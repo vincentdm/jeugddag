@@ -5,6 +5,7 @@
  *      Author: vincent
  */
 #include <fstream>
+#include <iostream>
 #include "stringhelper.h"
 #include "CSVFile.h"
 
@@ -24,6 +25,22 @@ void CSVFile::setHasHeaders(bool hasHeaders) {
 
 char CSVFile::getSeparator() const {
 	return separator;
+}
+
+void CSVFile::Write(std::string filename, DATASET dataToWrite) {
+	std::ofstream f;
+	f.open(filename.c_str(),f.trunc);
+
+	DATASET::iterator di;
+	for(di=dataToWrite.begin();di!=dataToWrite.end();di++) {
+		ROW::iterator ri;
+		for(ri=(*di).begin();ri!=(*di).end();ri++) {
+			f << *ri;
+		}
+		f << std::endl;
+	}
+
+	f.close();
 }
 
 void CSVFile::setSeparator(char separator) {
