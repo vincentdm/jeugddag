@@ -7,7 +7,7 @@
 
 #include "jeugddag.h"
 #include <stdio.h>
-#include "logger/logger.h"
+#include "logger.h"
 #include "CSVFile.h"
 
 int WorkshopSessie::WorkshopSessieCount = 0;

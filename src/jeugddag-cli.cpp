@@ -78,6 +78,7 @@ void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
 			if(!workshopGevonden) {
 				for(wsIt=workshopsInDezeSessie.begin();wsIt!=workshopsInDezeSessie.end();wsIt++) {
 					WorkshopSessie * ws = *wsIt;
+					Workshop * workshop = ws->workshop;
 					//workshop nog plaats?
 					if(ws->plaatsenBeschikbaar==0)
 						continue;

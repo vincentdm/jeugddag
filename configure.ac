@@ -25,5 +25,7 @@ LT_INIT
 AC_CONFIG_FILES([Makefile
 		src/Makefile
 		src/logger/Makefile
+		src/csvfile/Makefile
+		src/libjeugddag/Makefile
 		])
 AC_OUTPUT
