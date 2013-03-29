@@ -96,6 +96,7 @@ public:
 
 	WorkshopSessie(Workshop * workshop,Sessie * sessie);
 	~WorkshopSessie();
+	void WriteToCSV(std::string filename);
 
 	bool SchrijfIn(Inschrijving *);
 private:

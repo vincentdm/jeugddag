@@ -127,6 +127,7 @@ int main ( int argc, char ** argv ) {
 	std::vector<std::string> lijstBestanden;
 	std::string workshopfile = "workshops.csv";
 	std::string outputfile = "inschrijvingslijst.csv";
+	std::string outputdir = "./";
 	//parse options
 	for(int argIdx = 1;argIdx<argc;argIdx++) {
 		std::string arg (argv[argIdx]);
@@ -137,6 +138,8 @@ int main ( int argc, char ** argv ) {
 			workshopfile=argv[++argIdx];
 		} else if (arg=="-o") {
 			outputfile = argv[++argIdx];
+		} else if (arg=="-od") {
+			outputdir = argv[++argIdx];
 		} else {
 			printHelp();
 			return 0;
@@ -174,7 +177,15 @@ int main ( int argc, char ** argv ) {
 
 	}
 
+	println("-wegschrijven inschrijvingslijst naar " + outputfile);
 	alle->WriteToCSV(outputfile);
+
+	std::vector<WorkshopSessie *>::iterator wsIt;
+	for(wsIt=wsc->workshops.begin();wsIt!=wsc->workshops.end();wsIt++) {
+		WorkshopSessie * ws = *wsIt;
+		std::string filename = outputdir + "workshop_" + ws->workshop->naam + "_" + ws->sessie->start + ".csv";
+		ws->WriteToCSV(filename);
+	}
 
 
 

@@ -7,9 +7,8 @@
 
 #include "jeugddag.h"
 #include <stdio.h>
-#define LOGGER_CLASSNAME "WorkshopSessie"
-#define LOGGER_MINLEVEL LOG_DEBUG;
 #include "logger/logger.h"
+#include "CSVFile.h"
 
 int WorkshopSessie::WorkshopSessieCount = 0;
 WorkshopSessie::WorkshopSessie(Workshop * ws, Sessie * s) {
@@ -27,6 +26,24 @@ WorkshopSessie::~WorkshopSessie() {
 	Logger::Log(LOG_DEBUG,"Nu zijn er %lu WorkshopSessie objecten\n",(unsigned long)WorkshopSessie::WorkshopSessieCount);
 
 }
+
+void WorkshopSessie::WriteToCSV(std::string filename) {
+	CSVFile f;
+
+	CSVFile::DATASET set;
+	std::vector<Inschrijving *>::iterator iIt;
+	for(iIt=this->inschrijvingen.begin();iIt!=inschrijvingen.end();iIt++) {
+		Inschrijving * i = *iIt;
+		Kind * k = i->kind;
+		CSVFile::ROW row;
+		row.push_back(k->naam);
+		row.push_back(k->voornaam);
+
+		set.push_back(row);
+	}
+	f.Write(filename,set);
+}
+
 
 bool WorkshopSessie::SchrijfIn(Inschrijving * inschrijving) {
 	bool ret = true;
