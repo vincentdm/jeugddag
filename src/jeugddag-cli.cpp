@@ -26,7 +26,7 @@ void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
 	for(int sessieIdx=0;sessieIdx<JD_SESSIE_COUNT;sessieIdx++) {
 		Logger::Log(LOG_INFO,"\nVerdelen workshops voor sessie: %d",(sessieIdx+1));
 		std::vector<WorkshopSessie *> workshopsInDezeSessie = wsc->GetWorkshopsForSessie(sessieIdx);
-		Logger::Log(LOG_INFO,"Aantal workshops vor sessie: %d",workshopsInDezeSessie.size());
+		Logger::Log(LOG_INFO,"Aantal workshops voor sessie: %d",workshopsInDezeSessie.size());
 
 
 		std::vector<Inschrijving*>::iterator it;
@@ -46,9 +46,18 @@ void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
 					continue;
 
 				//check als workshop nog niet is toegevoegd
-				if(std::find(kind->toegekendeWorkshops.begin(),kind->toegekendeWorkshops.end(),ws)!=kind->toegekendeWorkshops.end())
 
+				std::vector<WorkshopSessie *>::iterator kwsIt;
+				bool workshopToegekend=false;
+				for(kwsIt=kind->toegekendeWorkshops.begin();kwsIt!=kind->toegekendeWorkshops.end();kwsIt++) {
+					WorkshopSessie * kws = *kwsIt;
+					if(kws->workshop == workshop) {
+						workshopToegekend = true;
+					}
+				}
+				if(workshopToegekend)
 					continue;
+
 
 				//check if workshop is gevraagd
 				if(std::find(inschrijving->workshops.begin(),inschrijving->workshops.end(),workshop)==inschrijving->workshops.end())
