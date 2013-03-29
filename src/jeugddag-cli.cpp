@@ -82,7 +82,15 @@ void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
 					if(ws->plaatsenBeschikbaar==0)
 						continue;
 					//workshop al gedaan?
-					if(std::find(kind->toegekendeWorkshops.begin(),kind->toegekendeWorkshops.end(),ws)!=kind->toegekendeWorkshops.end())
+					std::vector<WorkshopSessie *>::iterator kwsIt;
+					bool workshopToegekend=false;
+					for(kwsIt=kind->toegekendeWorkshops.begin();kwsIt!=kind->toegekendeWorkshops.end();kwsIt++) {
+						WorkshopSessie * kws = *kwsIt;
+						if(kws->workshop == workshop) {
+							workshopToegekend = true;
+						}
+					}
+					if(workshopToegekend)
 						continue;
 					//workshop in juiste leeftijdsgroep
 					if(ws->workshop->maxLeeftijd >= kind->leeftijd && ws->workshop->minLeeftijd <= kind->leeftijd) {
