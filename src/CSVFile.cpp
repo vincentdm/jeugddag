@@ -35,7 +35,7 @@ void CSVFile::Write(std::string filename, DATASET dataToWrite) {
 	for(di=dataToWrite.begin();di!=dataToWrite.end();di++) {
 		ROW::iterator ri;
 		for(ri=(*di).begin();ri!=(*di).end();ri++) {
-			f << *ri;
+			f << *ri <<  this->separator;
 		}
 		f << std::endl;
 	}

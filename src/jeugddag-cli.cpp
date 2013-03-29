@@ -101,35 +101,38 @@ void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
 	}
 }
 
+void printHelp() {
+	println("syntax is command <[-w|--workshops] workshopfile.csv > <[-l|--lijst] lijstfile.csv > ...");
+	println("-l -lijst        Leest een inschrijvingslijst in uit een file");
+	println("                 Dit kan zo veel herhaald worden als er inschrijvingsbestanden zijn");
+	println("-w -workshops    Leest een workshop bestand in uit een file");
+	println("                 Indien niet meegegeven, workshops.csv zal gelezen worden");
+}
+
 int main ( int argc, char ** argv ) {
 
 	Logger::Log(LOG_INFO,"Welkom bij Jeugddag-cli");
 	Logger::Log(LOG_INFO,"Bezig met opstarten...");
 
-	std::string configfile = "";
+
 	std::vector<std::string> lijstBestanden;
 	std::string workshopfile = "workshops.csv";
+	std::string outputfile = "inschrijvingslijst.csv";
 	//parse options
 	for(int argIdx = 1;argIdx<argc;argIdx++) {
 		std::string arg (argv[argIdx]);
-		if(arg=="-c" || arg == "--configfile") {
-			configfile=std::string(argv[++argIdx]);
-		} else if(arg=="-l" || arg=="--lijst") {
+
+		if(arg=="-l" || arg=="--lijst") {
 			lijstBestanden.push_back(std::string(argv[++argIdx]));
 		} else if(arg=="-w" || arg=="--workshops") {
 			workshopfile=argv[++argIdx];
+		} else if (arg=="-o") {
+			outputfile = argv[++argIdx];
+		} else {
+			printHelp();
+			return 0;
 		}
 	}
-
-	Logger::Log(LOG_DEBUG,"-configuratiebestand: "+configfile);
-
-	//parse config file if any
-	if(configfile!="") {
-
-	}
-
-
-
 
 	std::vector<InschrijvingsLijst *> lijsten;
 
@@ -161,6 +164,10 @@ int main ( int argc, char ** argv ) {
 		std::vector<WorkshopSessie *>::iterator wsIt;
 
 	}
+
+	alle->WriteToCSV(outputfile);
+
+
 
 	delete(wsc);
 
