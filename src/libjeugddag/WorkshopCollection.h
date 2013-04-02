@@ -9,8 +9,19 @@
 #define WORKSHOPCOLLECTION_H_
 
 #include <string>
-#include "jeugddag.h"
 #include <map>
+
+#include "Workshop.h"
+
+
+#define CSV_WS_ID		0
+#define CSV_WS_NAAM 		1
+#define CSV_WS_ORG  		2
+#define CSV_WS_CAP	  		3
+#define CSV_WS_AGEMIN 		4
+#define CSV_WS_AGEMAX 		5
+#define CSV_WS_SESS_START 	6
+#define CSV_WS_SESS_COUNT	4
 
 class WorkshopCollection {
 public:

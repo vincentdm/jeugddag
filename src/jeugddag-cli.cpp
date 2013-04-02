@@ -132,7 +132,6 @@ int main ( int argc, char ** argv ) {
 	Logger::Log(LOG_INFO,"Welkom bij Jeugddag-cli");
 	Logger::Log(LOG_INFO,"Bezig met opstarten...");
 
-
 	std::vector<std::string> lijstBestanden;
 	std::string workshopfile = "workshops.csv";
 	std::string outputfile = "inschrijvingslijst.csv";
@@ -155,25 +154,25 @@ int main ( int argc, char ** argv ) {
 		}
 	}
 
-	std::vector<InschrijvingsLijst *> lijsten;
+	Jeugddag jd;
 
 	println("-inlezen workshopbestand:" + workshopfile);
-	WorkshopCollection * wsc = new WorkshopCollection();
-	wsc->ReadFromCSVFile(workshopfile);
+	jd.ReadWorkshops(workshopfile);
+	WorkshopCollection * wsc = jd.GetWorkshopCollection();
 
 	println("-inlezen inschrijvingen");
 	for(int lijstIdx = 0;lijstIdx<lijstBestanden.size();lijstIdx++) {
 		println("--lijst bestand: " + lijstBestanden[lijstIdx]);
-		InschrijvingsLijst * il = new InschrijvingsLijst();
-		il->ReadFromCSV(lijstBestanden[lijstIdx]);
-		lijsten.push_back(il);
+		jd.ReadEnrollmentList(lijstBestanden[lijstIdx]);
 	}
 
 	println("-samenvoegen inschrijvingslijsten...");
-	InschrijvingsLijst * alle = InschrijvingsLijst::Merge(lijsten);
+	jd.MergeEnrollments();
 
 	println("-linken inschrijvingslijst");
-	alle->Link(*wsc);
+	jd.LinkEnrollments();
+
+	InschrijvingsLijst * alle = jd.GetEnrollmentList();
 
 	println("-verdelen van de inschrijvingen");
 	Verdeel(alle,wsc);
@@ -196,9 +195,6 @@ int main ( int argc, char ** argv ) {
 		ws->WriteToCSV(filename);
 	}
 
-
-
-	delete(wsc);
 
 	return 0;
 }
