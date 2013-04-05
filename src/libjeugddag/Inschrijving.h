@@ -12,11 +12,14 @@ struct Inschrijving;
 
 #include "Kind.h"
 #include "Workshop.h"
-
+#include <list>
 struct Inschrijving {
+	typedef std::list<Workshop *> WorkshopList_t;
+	typedef std::list<std::string> WorkshopNameList_t;
+	unsigned int id;
 	Kind * kind;
-	std::vector<std::string> workshopnamen;
-	std::vector<Workshop *> workshops;
+	WorkshopNameList_t workshopnamen;
+	std::list<Workshop *> workshops;
 };
 
 

@@ -29,7 +29,7 @@ void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
 		Logger::Log(LOG_INFO,"Aantal workshops voor sessie: %d",workshopsInDezeSessie.size());
 
 
-		std::vector<Inschrijving*>::iterator it;
+		InschrijvingsLijst::InschrijvingsLijst_t::iterator it;
 		for(it=lijst->inschrijvingen.begin();it!=lijst->inschrijvingen.end();it++) {
 			Inschrijving * inschrijving = *it;
 			Kind * kind = inschrijving->kind;
@@ -47,7 +47,7 @@ void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
 
 				//check als workshop nog niet is toegevoegd
 
-				std::vector<WorkshopSessie *>::iterator kwsIt;
+				Kind::WorkshopSessionList_t::iterator kwsIt;
 				bool workshopToegekend=false;
 				for(kwsIt=kind->toegekendeWorkshops.begin();kwsIt!=kind->toegekendeWorkshops.end();kwsIt++) {
 					WorkshopSessie * kws = *kwsIt;
@@ -83,7 +83,7 @@ void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
 					if(ws->plaatsenBeschikbaar==0)
 						continue;
 					//workshop al gedaan?
-					std::vector<WorkshopSessie *>::iterator kwsIt;
+					Kind::WorkshopSessionList_t::iterator kwsIt;
 					bool workshopToegekend=false;
 					for(kwsIt=kind->toegekendeWorkshops.begin();kwsIt!=kind->toegekendeWorkshops.end();kwsIt++) {
 						WorkshopSessie * kws = *kwsIt;
@@ -177,7 +177,7 @@ int main ( int argc, char ** argv ) {
 	println("-verdelen van de inschrijvingen");
 	Verdeel(alle,wsc);
 
-	std::vector<Inschrijving*>::iterator aIt;
+	InschrijvingsLijst::InschrijvingsLijst_t::iterator aIt;
 	for(aIt=alle->inschrijvingen.begin();aIt!=alle->inschrijvingen.end();aIt++) {
 		Inschrijving * i = *aIt;
 		std::cout << "Inschrijving van " << i->kind->naam << " " << i->kind->voornaam << std::endl;

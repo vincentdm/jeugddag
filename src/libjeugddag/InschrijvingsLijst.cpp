@@ -32,10 +32,13 @@ void InschrijvingsLijst::ReadFromCSV(std::string filename) {
 	file->Close();
 	delete (file);
 
+	unsigned int id = 0;
+
 	CSVFile::DATASET::iterator rowIt;
 	for(rowIt=dataset.begin();rowIt!=dataset.end();rowIt++) {
 		CSVFile::ROW rij = *rowIt;
 		Kind * kind = new Kind();
+		id++;
 
 		kind->nummer=rij[CSV_INSCHRIJVING_NUMMER];
 		kind->naam=rij[CSV_INSCHRIJVING_NAAM];
@@ -48,6 +51,7 @@ void InschrijvingsLijst::ReadFromCSV(std::string filename) {
 		kind->leeftijd=calculateAge(rij[CSV_INSCHRIJVING_GEBOORTEDATUM]);
 
 		Inschrijving * inschrijving = new Inschrijving();
+		inschrijving->id=id;
 		inschrijving->kind=kind;
 		this->inschrijvingen.push_back(inschrijving);
 
@@ -60,7 +64,7 @@ void InschrijvingsLijst::ReadFromCSV(std::string filename) {
 }
 
 void InschrijvingsLijst::WriteToCSV(std::string filename) {
-	std::vector<Inschrijving *>::iterator iIt;
+	InschrijvingsLijst_t::iterator iIt;
 	CSVFile::DATASET set;
 
 	for(iIt=this->inschrijvingen.begin();iIt!=this->inschrijvingen.end();iIt++) {
@@ -73,7 +77,7 @@ void InschrijvingsLijst::WriteToCSV(std::string filename) {
 		row.push_back(k->telefoon);
 		row.push_back(k->gsm);
 
-		std::vector<WorkshopSessie *>::iterator wsIt;
+		Kind::WorkshopSessionList_t::iterator wsIt;
 		for(wsIt=k->toegekendeWorkshops.begin();wsIt!=k->toegekendeWorkshops.end();wsIt++) {
 			Workshop * w = (*wsIt)->workshop;
 			row.push_back(w->naam);
@@ -92,34 +96,24 @@ InschrijvingsLijst* InschrijvingsLijst::Merge(
 
 	InschrijvingsLijst * merged = new InschrijvingsLijst();
 
-	std::vector<Inschrijving *>::size_type max=0;
-	for(int i = 0;i<lijsten.size();i++) {
-		if(lijsten[i]->inschrijvingen.size()>max) {
-			max=lijsten[i]->inschrijvingen.size();
-		}
+	std::vector<InschrijvingsLijst *> mijnLijsten = lijsten;
+	std::vector<InschrijvingsLijst*>::iterator lijstIt;
+	for(lijstIt=mijnLijsten.begin();lijstIt!=mijnLijsten.end();lijstIt++) {
+		InschrijvingsLijst * lijst = *lijstIt;
+		merged->inschrijvingen.merge(lijst->inschrijvingen,InschrijvingsLijst::CompareInschrijving);
 	}
-
-	for(int i=0;i<max;i++) {
-		for(int lijstIdx=0;lijstIdx<lijsten.size();lijstIdx++) {
-			InschrijvingsLijst * lijst = lijsten[lijstIdx];
-			if(lijst->inschrijvingen.size()>i) {
-				merged->inschrijvingen.push_back(lijst->inschrijvingen[i]);
-			}
-		}
-	}
-
 	return merged;
 
 
 }
 
 void InschrijvingsLijst::Link(const WorkshopCollection& workshops) {
-	std::vector<Inschrijving *>::iterator iIt;
+	InschrijvingsLijst_t::iterator iIt;
 	std::vector<Workshop*>::const_iterator wIt;
 	for(iIt=inschrijvingen.begin();iIt!=inschrijvingen.end();iIt++) {
 		Inschrijving * inschrijving = *iIt;
 
-		std::vector<std::string>::iterator wnIt;
+		Inschrijving::WorkshopNameList_t::iterator wnIt;
 		for(wnIt=inschrijving->workshopnamen.begin();wnIt!=inschrijving->workshopnamen.end();wnIt++) {
 
 			std::string workshopnaam = *wnIt;
@@ -152,4 +146,9 @@ int InschrijvingsLijst::calculateAge(std::string dob) {
 
 
 
+}
+
+bool InschrijvingsLijst::CompareInschrijving(Inschrijving* i1,
+		Inschrijving* i2) {
+	return (i1->id < i2->id);
 }

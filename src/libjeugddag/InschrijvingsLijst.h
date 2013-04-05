@@ -9,7 +9,7 @@
 #define INSCHRIJVINGSLIJST_H_
 
 #include <map>
-#include <vector>
+#include <list>
 #include <string>
 #include "Inschrijving.h"
 #include "WorkshopCollection.h"
@@ -36,6 +36,7 @@
 
 class InschrijvingsLijst {
 public:
+	typedef std::list<Inschrijving *> InschrijvingsLijst_t;
 	InschrijvingsLijst();
 	virtual ~InschrijvingsLijst();
 
@@ -44,7 +45,9 @@ public:
 
 	static InschrijvingsLijst * Merge(const std::vector<InschrijvingsLijst*>&);
 	void Link(const WorkshopCollection& workshops);
-	std::vector<Inschrijving*> inschrijvingen;
+	InschrijvingsLijst_t inschrijvingen;
+
+	static bool CompareInschrijving(Inschrijving * i1,Inschrijving * i2);
 
 private:
 	int calculateAge(std::string dob);

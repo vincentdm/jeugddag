@@ -10,8 +10,9 @@
 
 struct Kind;
 #include "Workshop.h"
-
+#include <list>
 struct Kind {
+	typedef std::list<WorkshopSessie *> WorkshopSessionList_t;
 	std::string nummer;
 	std::string naam;
 	std::string voornaam;
@@ -25,7 +26,7 @@ struct Kind {
 	std::string naamVriendje;
 	Kind * vriendje;
 	bool betaald;
-	std::vector<WorkshopSessie *> toegekendeWorkshops;
+	WorkshopSessionList_t toegekendeWorkshops;
 
 	Kind();
 	~Kind();
