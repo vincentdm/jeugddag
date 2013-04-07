@@ -46,6 +46,8 @@ public:
 	void ReadEnrollmentList(std::string filename);
 	void MergeEnrollments();
 	void LinkEnrollments();
+	bool Assign(Inschrijving *, WorkshopSessie *);
+	void Sort();
 
 	InschrijvingsLijst * GetEnrollmentList() { return this->enrollmentList; };
 
@@ -53,6 +55,9 @@ private:
 	std::vector<InschrijvingsLijst *> enrollmentLists;
 	InschrijvingsLijst * enrollmentList;
 	WorkshopCollection * workshopCollection;
+
+	unsigned int numberOfSessions;
+	std::list<Sessie *> sessions;
 
 };
 

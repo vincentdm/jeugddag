@@ -12,112 +12,7 @@ void println(std::string line) {
 	Logger::Log(LOG_INFO,line);
 }
 
-WorkshopSessie * SearchWorkshop(std::vector<WorkshopSessie *> ws,Workshop * w) {
-	std::vector<WorkshopSessie *>::iterator wsIt;
-	for(wsIt==ws.begin();wsIt!=ws.end();wsIt++) {
-		if((*wsIt)->workshop==w) {
-			return *wsIt;
-		}
-	}
-}
 
-
-void Verdeel(InschrijvingsLijst * lijst,WorkshopCollection *wsc ) {
-	for(int sessieIdx=0;sessieIdx<JD_SESSIE_COUNT;sessieIdx++) {
-		Logger::Log(LOG_INFO,"\nVerdelen workshops voor sessie: %d",(sessieIdx+1));
-		std::vector<WorkshopSessie *> workshopsInDezeSessie = wsc->GetWorkshopsForSessie(sessieIdx);
-		Logger::Log(LOG_INFO,"Aantal workshops voor sessie: %d",workshopsInDezeSessie.size());
-
-
-		InschrijvingsLijst::InschrijvingsLijst_t::iterator it;
-		for(it=lijst->inschrijvingen.begin();it!=lijst->inschrijvingen.end();it++) {
-			Inschrijving * inschrijving = *it;
-			Kind * kind = inschrijving->kind;
-			Logger::Log(LOG_INFO,"Sessie %d: toewijzen kind %s %s\n",(sessieIdx+1),kind->voornaam.c_str(),kind->naam.c_str());
-
-			std::vector<WorkshopSessie *>::iterator wsIt;
-			bool workshopGevonden=false;
-			for(wsIt=workshopsInDezeSessie.begin();wsIt!=workshopsInDezeSessie.end();wsIt++) {
-				WorkshopSessie * ws = *wsIt;
-				Workshop * workshop = ws->workshop;
-
-				//check als er nog plaats is in deze sessie
-				if(ws->plaatsenBeschikbaar==0)
-					continue;
-
-				//check als workshop nog niet is toegevoegd
-
-				Kind::WorkshopSessionList_t::iterator kwsIt;
-				bool workshopToegekend=false;
-				for(kwsIt=kind->toegekendeWorkshops.begin();kwsIt!=kind->toegekendeWorkshops.end();kwsIt++) {
-					WorkshopSessie * kws = *kwsIt;
-					if(kws->workshop == workshop) {
-						workshopToegekend = true;
-					}
-				}
-				if(workshopToegekend)
-					continue;
-
-
-				//check if workshop is gevraagd
-				if(std::find(inschrijving->workshops.begin(),inschrijving->workshops.end(),workshop)==inschrijving->workshops.end())
-					continue;
-
-				//ok er is nog plaats en het kind heeft de workshop gevraagd, voeg de sessie toe
-				ws->SchrijfIn(inschrijving);
-				kind->toegekendeWorkshops.push_back(ws);
-				workshopGevonden=true;
-				Logger::Log(LOG_INFO,"Kind %s %s heeft workshop %s toegewezen voor sessie %d\n",kind->voornaam.c_str(),kind->naam.c_str(),ws->workshop->naam.c_str(),(sessieIdx+1));
-				Logger::Log(LOG_INFO,"workshop %s heeft nog %d plaatsen over van %d\n",ws->workshop->naam.c_str(),ws->plaatsenBeschikbaar,ws->workshop->capaciteit);
-				break;
-			}
-
-			//wat als...
-			//.. er nu geen workshop gevonden is voor een kind?
-			//... dan zoeken we er nu een!
-			if(!workshopGevonden) {
-				for(wsIt=workshopsInDezeSessie.begin();wsIt!=workshopsInDezeSessie.end();wsIt++) {
-					WorkshopSessie * ws = *wsIt;
-					Workshop * workshop = ws->workshop;
-					//workshop nog plaats?
-					if(ws->plaatsenBeschikbaar==0)
-						continue;
-					//workshop al gedaan?
-					Kind::WorkshopSessionList_t::iterator kwsIt;
-					bool workshopToegekend=false;
-					for(kwsIt=kind->toegekendeWorkshops.begin();kwsIt!=kind->toegekendeWorkshops.end();kwsIt++) {
-						WorkshopSessie * kws = *kwsIt;
-						if(kws->workshop == workshop) {
-							workshopToegekend = true;
-						}
-					}
-					if(workshopToegekend)
-						continue;
-					//workshop in juiste leeftijdsgroep
-					if(ws->workshop->maxLeeftijd >= kind->leeftijd && ws->workshop->minLeeftijd <= kind->leeftijd) {
-						ws->SchrijfIn(inschrijving);
-						kind->toegekendeWorkshops.push_back(ws);
-
-						workshopGevonden=true;
-						break;
-					}
-				}
-				if(!workshopGevonden) {
-					Logger::Log(LOG_WARNING,"Kind %s %s kon geen workshop toegewezen krijgen voor sessie %d\n",
-							kind->voornaam.c_str(),kind->naam.c_str(),(sessieIdx+1));
-				} else {
-					WorkshopSessie * ws = *wsIt;
-					Logger::Log(LOG_INFO,"Kind %s %s heeft workshop %s toegewezen (door ons) voor sessie %d\n",
-							kind->voornaam.c_str(),kind->naam.c_str(),ws->workshop->naam.c_str(),(sessieIdx+1));
-					Logger::Log(LOG_INFO,"workshop %s heeft nog %d plaatsen over van %d\n",ws->workshop->naam.c_str(),ws->plaatsenBeschikbaar,ws->workshop->capaciteit);
-				}
-			}
-
-
-
-		}
-	}
-}
 
 void printHelp() {
 	println("syntax is command <[-w|--workshops] workshopfile.csv > <[-l|--lijst] lijstfile.csv > ...");
@@ -175,7 +70,8 @@ int main ( int argc, char ** argv ) {
 	InschrijvingsLijst * alle = jd.GetEnrollmentList();
 
 	println("-verdelen van de inschrijvingen");
-	Verdeel(alle,wsc);
+	//Verdeel(alle,wsc);
+	jd.Sort();
 
 	InschrijvingsLijst::InschrijvingsLijst_t::iterator aIt;
 	for(aIt=alle->inschrijvingen.begin();aIt!=alle->inschrijvingen.end();aIt++) {

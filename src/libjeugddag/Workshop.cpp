@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 int Workshop::WorkshopCount=0;
+int Sessie::maxId=0;
 Workshop::Workshop()  {
 	Workshop::WorkshopCount++;
 	printf("Nu zijn er %lu Workshop objecten\n",Workshop::WorkshopCount);

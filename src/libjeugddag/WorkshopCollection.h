@@ -28,17 +28,35 @@ public:
 	WorkshopCollection();
 	virtual ~WorkshopCollection();
 
+	Sessie * GetSession(unsigned int id) {
+			std::list<Sessie*>::iterator sessIt;
+			for(sessIt=this->sessies.begin();sessIt!=this->sessies.end();sessIt++) {
+						Sessie * s = *sessIt;
+						if(s->id==id)
+							return s;
+			}
+			return 0;
+		}
+
 	void ReadFromCSVFile(std::string fileName);
+
 
 	std::vector<WorkshopSessie *> GetWorkshopsForSessie(Sessie * sessie);
 
 	std::vector<WorkshopSessie *> GetWorkshopsForSessie(int sessieIdx) {
-		return this->GetWorkshopsForSessie(this->sessies[sessieIdx]);
+		std::vector<WorkshopSessie*> retvec;
+		Sessie * s =GetSession(sessieIdx);
+		if(s!=0)
+			retvec=GetWorkshopsForSessie(s);
+
+		return retvec;
 	}
+
+
 
 	std::vector<WorkshopSessie *> workshops;
 	std::vector<Workshop *> workshop_list;
-	std::vector<Sessie *> sessies;
+	std::list<Sessie *> sessies;
 };
 
 #endif /* WORKSHOPCOLLECTION_H_ */

@@ -33,7 +33,14 @@ private:
 };
 
 struct Sessie {
+	int id;
 	std::string start;
+
+	Sessie() {
+		id=++maxId;
+	}
+private:
+	static int maxId;
 
 };
 
