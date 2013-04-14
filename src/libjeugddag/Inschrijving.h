@@ -13,7 +13,10 @@ struct Inschrijving;
 #include "Kind.h"
 #include "Workshop.h"
 #include <list>
-struct Inschrijving {
+class Inschrijving {
+
+public:
+
 	typedef std::list<Workshop *> WorkshopList_t;
 	typedef std::list<std::string> WorkshopNameList_t;
 	unsigned int id;
@@ -21,6 +24,9 @@ struct Inschrijving {
 	WorkshopNameList_t workshopnamen;
 	std::list<Workshop *> workshops;
 	Inschrijving * vriendje;
+
+	bool WorkshopRequested(Workshop *w);
+	bool WorkshopDone(Workshop * w);
 };
 
 

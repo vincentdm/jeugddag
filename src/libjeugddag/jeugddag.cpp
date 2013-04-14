@@ -64,19 +64,7 @@ bool Jeugddag::Assign(Inschrijving* enrollee, WorkshopSessie* ws) {
 		return false;
 
 	//workshop done already?
-	bool workshopDone = false;
-
-	Kind::WorkshopSessionList_t::iterator kwsIt;
-	for(kwsIt=enrollee->kind->toegekendeWorkshops.begin();
-			kwsIt!=enrollee->kind->toegekendeWorkshops.end() && !workshopDone;
-			kwsIt++) {
-		WorkshopSessie * assignedWorkshop = *kwsIt;
-		if(assignedWorkshop->workshop==workshop) {
-			workshopDone=true;
-		}
-	}
-
-	if(workshopDone)
+	if(enrollee->WorkshopDone(workshop))
 		return false;
 
 	//all checks pass!
@@ -93,6 +81,7 @@ void Jeugddag::Sort() {
 	sessions=workshopCollection->sessies;
 
 	std::list<Sessie *>::iterator sessIt;
+	WorkshopSessie * assignedWorkshopSession;
 	for(sessIt=sessions.begin();sessIt!=sessions.end();sessIt++) {
 		//for each session
 		Sessie * sessie = *sessIt;
@@ -106,7 +95,15 @@ void Jeugddag::Sort() {
 				enrollIt++) {
 			Inschrijving * enrollee = *enrollIt;
 			printf("[INFO] Kind %s %s\n",enrollee->kind->naam.c_str(),enrollee->kind->voornaam.c_str());
+
+			if(enrollee->kind->toegekendeWorkshops.size() >= sessie->id ) {
+				printf("[INFO]   Heeft al een workshop voor deze sessie!\n");
+				continue;
+			}
+
+
 			bool foundWorkshop=false;
+			assignedWorkshopSession = NULL;
 
 			std::list<Workshop *>::iterator wantedWorkshopIt;
 			for(wantedWorkshopIt=enrollee->workshops.begin();
@@ -123,7 +120,8 @@ void Jeugddag::Sort() {
 
 					WorkshopSessie * availableWorkshop = *availableWorkshopIt;
 					if(availableWorkshop->workshop==wantedWorkshop) {
-						foundWorkshop = this->Assign(enrollee,(WorkshopSessie*)*availableWorkshopIt);
+						foundWorkshop = this->Assign(enrollee,availableWorkshop);
+						assignedWorkshopSession=availableWorkshop;
 					}
 
 				}
@@ -141,7 +139,7 @@ void Jeugddag::Sort() {
 
 					WorkshopSessie * ws = *availableWorkshopIt;
 					foundWorkshop = this->Assign(enrollee,ws);
-
+					assignedWorkshopSession=ws;
 
 				}
 
@@ -150,6 +148,30 @@ void Jeugddag::Sort() {
 			if(!foundWorkshop) {
 				printf("[ERROR]: Kind %s %s kon geen workshop toegewezen krijgen voor sessie %d\n",
 						enrollee->kind->naam.c_str(),enrollee->kind->voornaam.c_str(),sessie->id);
+			} else {
+				/*
+				 * OK, we managed to enroll someone for some workshop,
+				 * now try to enroll the "friend" for the same workshop.
+				 */
+
+				if(enrollee->vriendje == 0) {
+					//bummer, the enrollee has no friend assigned.
+					//so we have to continue
+					continue;
+				} else {
+					//the enrollee has a friend, now check if the "friend"
+					//also likes this workshop
+					if(enrollee->vriendje->WorkshopRequested(assignedWorkshopSession->workshop) &&
+							enrollee->vriendje->WorkshopDone(assignedWorkshopSession->workshop) &&
+							enrollee->vriendje->kind->toegekendeWorkshops.size() < sessie->id) {
+						//the "friend" also wants to do this workshop
+						//and has not done this workshop already
+						//and has not been assigned to a workshop for this session
+						this->Assign(enrollee->vriendje,assignedWorkshopSession);
+					}
+				}
+
+
 			}
 
 			printf("\n");

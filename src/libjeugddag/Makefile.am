@@ -8,5 +8,6 @@ libjeugddag_la_SOURCES=\
 	Workshop.cpp \
 	WorkshopSessie.cpp \
 	Kind.cpp \
+	Inschrijving.cpp \
 	InschrijvingsLijst.cpp \
 	jeugddag.cpp
