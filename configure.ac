@@ -15,6 +15,7 @@ AC_PROG_CC
 LT_INIT
 
 # Checks for libraries.
+PKG_CHECK_MODULES([GTKMM], [gtkmm-3.0 >= 3.0.0])
 
 # Checks for header files.
 
@@ -27,5 +28,6 @@ AC_CONFIG_FILES([Makefile
 		src/logger/Makefile
 		src/csvfile/Makefile
 		src/libjeugddag/Makefile
+		src/jeugddag-gui/Makefile
 		])
 AC_OUTPUT

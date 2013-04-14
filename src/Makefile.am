@@ -1,4 +1,4 @@
-SUBDIRS=logger csvfile libjeugddag
+SUBDIRS=logger csvfile libjeugddag jeugddag-gui
 bin_PROGRAMS=jeugddagcli
 
 INCLUDES=\
