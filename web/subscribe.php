@@ -1,7 +1,6 @@
 <?php
 
 if(count($_POST) != 0) {
-	echo "<pre>";print_r($_POST);echo "</pre>";
 
 	$message =  "Beste,\r\nHierbij willen wij graag bevestigen dat ".$_POST['naam']." ".$_POST['voornaam'];
 	$message .= " op de inschrijvingslijst geplaatst is voor de jeugddag op 18 mei 2013.\r\n";
@@ -21,11 +20,31 @@ if(count($_POST) != 0) {
 		$message .= "workshop $suffix\t".$_POST["workshop".$prefix."_".$suffix]."\n";
 	}
 	$to = $_POST['email'];
-	$from = "inschrijvingen@jeugddag.be";
-	$headers = "From: $from\r\nTo: $to\r\nCc: $from\r\n";
+	$from = "noreply@jeugddag.be";
+	$headers = "From: $from\r\nCc: inschrijven@jeugddag.be\r\n";
 	mail($to,"Inschrijvingsbevestiging",$message,$headers,"-f$from");
-	echo "<pre>$message</pre>";
+
+	$message2 = "Beste,\r\nIndien ".$_POST['naam']." ".$_POST['voornaam']." betaald heeft, \r\ndan klik je op onderstaande link.\r\n";
+	$message2 .= "Is het niet mogelijk om op onderstaande link te klikken.  Kopieer hem naar de adresbalk van je browser.\r\n\r\n";
+	$message2 .= "http://www.jeugddag.be/subscribe.php?paid=1&email=".$_POST['email']."&naam=".$_POST['naam']."&voornaam=".$_POST['voornaam'];
+	$message2 .= "\r\n\r\nMet vriendelijke groet,\r\n\r\nDe website ;)\r\n";
+	mail("inschrijven@jeugddag.be","Inschrijving: ".$_POST['naam']." ".$_POST['voornaam']." betaald?",$message2,"From: $from\r\n","-f$from");
+	header("location: http://www.jeugddag.be/inschrijvingWachtende");
 	die();
+}
+	echo "<pre>";print_r($_REQUEST);echo "</pre>";
+if(isset($_REQUEST['paid']) && isset($_REQUEST['email']) && isset($_REQUEST['naam']) && isset($_REQUEST['voornaam'])) {
+
+	$naam = $_REQUEST['naam'];
+	$voornaam = $_REQUEST['voornaam'];
+	$message = "";
+	$message .= "Beste,\r\n\r\nHierbij willen wij bevestigen dat we de betaling voor $naam $voornaam ontvangen hebben\r\n\r\n";
+	$message .= "Met vriendelijke groet,\r\n\r\nWerkgroep jeugddag 2013,\r\nSint-Laureins\r\n\r\n";
+	$header = "From: noreply@jeugddag.be\r\nCc: inschrijven@jeugddag.be";
+	mail($_REQUEST['email'],"Betalingsbevestiging",$message,$header,"-fnoreply@jeugddag.be");
+
+	die("OK");
+
 }
 $workshops69 = array();
 $workshops69[] .= "";
