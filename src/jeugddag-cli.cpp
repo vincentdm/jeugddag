@@ -70,7 +70,6 @@ int main ( int argc, char ** argv ) {
 	InschrijvingsLijst * alle = jd.GetEnrollmentList();
 
 	println("-verdelen van de inschrijvingen");
-	//Verdeel(alle,wsc);
 	jd.Sort();
 
 	InschrijvingsLijst::InschrijvingsLijst_t::iterator aIt;

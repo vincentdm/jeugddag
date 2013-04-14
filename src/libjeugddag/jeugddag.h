@@ -56,6 +56,8 @@ private:
 	InschrijvingsLijst * enrollmentList;
 	WorkshopCollection * workshopCollection;
 
+
+
 	unsigned int numberOfSessions;
 	std::list<Sessie *> sessions;
 

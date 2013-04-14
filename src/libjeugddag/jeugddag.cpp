@@ -96,7 +96,7 @@ void Jeugddag::Sort() {
 	for(sessIt=sessions.begin();sessIt!=sessions.end();sessIt++) {
 		//for each session
 		Sessie * sessie = *sessIt;
-
+		printf("[INFO] toewijzen voor sessie %d\n",sessie->id);
 		std::vector<WorkshopSessie *> availableWorkshops = this->workshopCollection->GetWorkshopsForSessie(sessie);
 
 		//for each enrollee
@@ -105,24 +105,26 @@ void Jeugddag::Sort() {
 				enrollIt!=this->enrollmentList->inschrijvingen.end();
 				enrollIt++) {
 			Inschrijving * enrollee = *enrollIt;
-
+			printf("[INFO] Kind %s %s\n",enrollee->kind->naam.c_str(),enrollee->kind->voornaam.c_str());
 			bool foundWorkshop=false;
 
 			std::list<Workshop *>::iterator wantedWorkshopIt;
 			for(wantedWorkshopIt=enrollee->workshops.begin();
-					wantedWorkshopIt!=enrollee->workshops.end();
+					wantedWorkshopIt!=enrollee->workshops.end() && !foundWorkshop;
 					wantedWorkshopIt++) {
 
 				Workshop * wantedWorkshop = *wantedWorkshopIt;
+				printf("[DEBUG]    wil workshop %s\n",wantedWorkshop->naam.c_str());
 
 				std::vector<WorkshopSessie *>::iterator availableWorkshopIt;
-				int count = 0;
 				for(availableWorkshopIt=availableWorkshops.begin();
 						availableWorkshopIt!=availableWorkshops.end() && !foundWorkshop;
 						availableWorkshopIt++) {
-					count++;
 
-					foundWorkshop = this->Assign(enrollee,(WorkshopSessie*)*availableWorkshopIt);
+					WorkshopSessie * availableWorkshop = *availableWorkshopIt;
+					if(availableWorkshop->workshop==wantedWorkshop) {
+						foundWorkshop = this->Assign(enrollee,(WorkshopSessie*)*availableWorkshopIt);
+					}
 
 				}
 
@@ -130,6 +132,8 @@ void Jeugddag::Sort() {
 			}//end foreach wanted workshop in enrollment
 
 			if(!foundWorkshop) {
+				printf("[WARNING]: Kind %s %s kon geen workshop toegewezen krijgen voor sessie %d\nzelf 1 proberen toewijzen\n",
+						enrollee->kind->naam.c_str(),enrollee->kind->voornaam.c_str(),sessie->id);
 				std::vector<WorkshopSessie *>::iterator availableWorkshopIt;
 				for(availableWorkshopIt=availableWorkshops.begin();
 						availableWorkshopIt!=availableWorkshops.end() && !foundWorkshop;
@@ -144,13 +148,13 @@ void Jeugddag::Sort() {
 			}
 
 			if(!foundWorkshop) {
-				printf("[WARNING]: Kind %s %s kon geen workshop toegewezen krijgen voor sessie %d\n",
+				printf("[ERROR]: Kind %s %s kon geen workshop toegewezen krijgen voor sessie %d\n",
 						enrollee->kind->naam.c_str(),enrollee->kind->voornaam.c_str(),sessie->id);
 			}
 
-
-		}
-
-	}
+			printf("\n");
+		}//end foreach enrollee
+		printf("\n\n");
+	}//end foreach session
 
 }

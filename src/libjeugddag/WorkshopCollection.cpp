@@ -53,7 +53,7 @@ void WorkshopCollection::ReadFromCSVFile(std::string fileName) {
 		this->workshop_list.push_back(ws);
 		for(int sessIdx=0;sessIdx<CSV_WS_SESS_COUNT;sessIdx++) {
 			if(rij[CSV_WS_SESS_START+sessIdx] == "J") {
-				WorkshopSessie * wss = new WorkshopSessie(ws,GetSession(sessIdx));
+				WorkshopSessie * wss = new WorkshopSessie(ws,GetSession(sessIdx+1));
 				wss->plaatsenBeschikbaar=ws->capaciteit;
 				this->workshops.push_back(wss);
 			}
