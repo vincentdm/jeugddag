@@ -45,20 +45,29 @@ void InschrijvingsLijst::ReadFromCSV(std::string filename) {
 		kind->voornaam=rij[CSV_INSCHRIJVING_VOORNAAM];
 		kind->adres=rij[CSV_INSCHRIJVING_ADRES];
 		kind->telefoon=rij[CSV_INSCHRIJVING_TELNUMMER];
-		kind->gsm=rij[CSV_INSCHRIJVING_GSMNUMMER];
+		//kind->gsm=rij[CSV_INSCHRIJVING_GSMNUMMER];
 		kind->geboortedatum=rij[CSV_INSCHRIJVING_GEBOORTEDATUM];
 		kind->opstapplaats=rij[CSV_INSCHRIJVING_OPSTAPPLAATS];
-		kind->leeftijd=calculateAge(rij[CSV_INSCHRIJVING_GEBOORTEDATUM]);
+		if(kind->geboortedatum.size()>2) {
+			kind->leeftijd=calculateAge(rij[CSV_INSCHRIJVING_GEBOORTEDATUM]);
+		} else {
+			kind->leeftijd=std::atoi(rij[CSV_INSCHRIJVING_GEBOORTEDATUM].c_str());
+		}
 
 		Inschrijving * inschrijving = new Inschrijving();
 		inschrijving->id=id;
 		inschrijving->kind=kind;
 		this->inschrijvingen.push_back(inschrijving);
 
-		for (int wsId=0;wsId<CSV_INSCHRIJVING_WORKSHOP_COUNT;wsId++) {
+		int wsId=0;
+		for (wsId=0;wsId<CSV_INSCHRIJVING_WORKSHOP_COUNT;wsId++) {
 			inschrijving->workshopnamen.push_back(rij[CSV_INSCHRIJVING_WORKSHOP_START+wsId]);
 		}
-		inschrijving->workshopnamen.push_back(rij[CSV_INSCHRIJVING_WORKSHOP_RES]);
+		int wsrId = 0;
+
+		for (wsrId=0; wsrId < CSV_INSCHRIJVING_WORKSHOP_RES_COUNT;wsrId++) {
+			inschrijving->workshopnamen.push_back(rij[CSV_INSCHRIJVING_WORKSHOP_RES_START+wsrId]);
+		}
 
 	}
 }
@@ -73,9 +82,9 @@ void InschrijvingsLijst::WriteToCSV(std::string filename) {
 		CSVFile::ROW row;
 		row.push_back(k->naam);
 		row.push_back(k->voornaam);
-		row.push_back(k->geboortedatum);
+		row.push_back(k->leeftijd);
+		row.push_back(k->opstapplaats);
 		row.push_back(k->telefoon);
-		row.push_back(k->gsm);
 
 		Kind::WorkshopSessionList_t::iterator wsIt;
 		for(wsIt=k->toegekendeWorkshops.begin();wsIt!=k->toegekendeWorkshops.end();wsIt++) {
