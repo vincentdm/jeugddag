@@ -20,6 +20,7 @@ struct Inschrijving {
 	Kind * kind;
 	WorkshopNameList_t workshopnamen;
 	std::list<Workshop *> workshops;
+	Inschrijving * vriendje;
 };
 
 
