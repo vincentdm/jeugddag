@@ -8,7 +8,7 @@ if(count($_POST) != 0) {
 	$message .= " indien u 5 euro stort op rekening BE57 8904 2405 5335 of in gesloten envelop afgeeft op uw lokale jeugddienst.";
 	$message .= "Nadat onze medewerkers uw gegevens verwerkt hebben en uw betaling ontvangen hebben, ontvangt u een email met de definitieve bevestiging.";
 	$message .= "\r\n\r\nMet vriendelijke groet,\r\n\r\nWerkgroep jeugddag 2013,\r\nSint-Laureins\r\n\r\n";
-	foreach (array("naam","voornaam","adres","telefoon","email","leeftijd","vriendje") as $field) {
+	foreach (array("naam","voornaam","adres","telefoon","email","leeftijd","vriendje","opstapplaats") as $field) {
 		$message .= "$field:\t".$_POST[$field]."\n";
 	}	
 	$prefix = "69";
@@ -32,7 +32,7 @@ if(count($_POST) != 0) {
 	header("location: http://www.jeugddag.be/inschrijvingWachtende");
 	die();
 }
-	echo "<pre>";print_r($_REQUEST);echo "</pre>";
+//	echo "<pre>";print_r($_REQUEST);echo "</pre>";
 if(isset($_REQUEST['paid']) && isset($_REQUEST['email']) && isset($_REQUEST['naam']) && isset($_REQUEST['voornaam'])) {
 
 	$naam = $_REQUEST['naam'];
@@ -122,6 +122,7 @@ function processage(field) {
 <tr><td><label for="email">Email</label></td><td><input type="text" id="email" name="email" /></td></tr>
 <tr><td><label for="leeftijd">Leeftijd</label></td><td><input type="text" id="leeftijd" name="leeftijd" onchange="processage(this)" /></td></tr>
 <tr><td><label for="vriendje">Naam van het vriendje bij <br/>wie ik zeker wil zitten</label></td><td><input type="text" id="vriendje" name="vriendje" /></td></tr>
+<tr><td><label for="opstapplaats">Ik ga met de bus en stap op in <br/>(indien niet van Sint-Laureins)</label></td><td><input type="text" id="opstapplaats" name="opstapplaats" /></td></tr>
 </table>
 <table id="table69" style="display: none">
 <?php
