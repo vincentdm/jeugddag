@@ -142,13 +142,16 @@ $workshops1012[] .= "XL-Games";
 </script>
 <script>
 function processage(field) {
-  var table69 = document.getElementById("table69");
-  var table1012 = document.getElementById("table1012");
+	var table69 = document.getElementById("table69");
+	var table1012 = document.getElementById("table1012");
 
-	  if(field.value < 10) {
+
+	var leeftijd = parseInt(field.value,10);
+
+	if(leeftijd < 10) {
 		table69.style.display="block";
 		table1012.style.display="none";
-	  } else { 
+	} else { 
 		table69.style.display="none";
 		table1012.style.display="block";
 	}
@@ -178,6 +181,7 @@ if($errorMsg != "") {
 <?php
 $table69_style = "display:none;";
 $table1012_style = "display:none;";
+
 if(isset($_POST['leeftijd'])) {
 	if ( intval($_POST['leeftijd']) > 9 ) {
 		$table1012_style="";
